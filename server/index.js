@@ -5,7 +5,8 @@ const logger = require('./logger');
 
 const argv = require('./argv');
 const port = require('./port');
-const setup = require('./middlewares/frontendMiddleware');
+const frontendSetup = require('./middlewares/frontendMiddleware');
+const backendSetup = require('./middlewares/backendMiddleware');
 const isDev = process.env.NODE_ENV !== 'production';
 const ngrok =
   (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel
@@ -14,11 +15,13 @@ const ngrok =
 const { resolve } = require('path');
 const app = express();
 
+backendSetup(app);
+
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
 // app.use('/api', myApi);
 
 // In production we need to pass these values in instead of relying on webpack
-setup(app, {
+frontendSetup(app, {
   outputPath: resolve(process.cwd(), 'build'),
   publicPath: '/',
 });
