@@ -5,10 +5,17 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { fromJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
+import { persistStore, autoRehydrate } from 'redux-persist-immutable';
 import createSagaMiddleware from 'redux-saga';
 import createReducer from './reducers';
 
 const sagaMiddleware = createSagaMiddleware();
+
+let storeObj = null;
+
+export function getStore() {
+  return storeObj;
+}
 
 export default function configureStore(initialState = {}, history) {
   // Create the store with two middlewares
@@ -16,7 +23,7 @@ export default function configureStore(initialState = {}, history) {
   // 2. routerMiddleware: Syncs the location/URL path to the state
   const middlewares = [sagaMiddleware, routerMiddleware(history)];
 
-  const enhancers = [applyMiddleware(...middlewares)];
+  const enhancers = [applyMiddleware(...middlewares), autoRehydrate()];
 
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
   /* eslint-disable no-underscore-dangle, indent */
@@ -38,6 +45,8 @@ export default function configureStore(initialState = {}, history) {
     composeEnhancers(...enhancers),
   );
 
+  persistStore(store, { whitelist: ['auth', 'global'] });
+
   // Extensions
   store.runSaga = sagaMiddleware.run;
   store.injectedReducers = {}; // Reducer registry
@@ -50,6 +59,8 @@ export default function configureStore(initialState = {}, history) {
       store.replaceReducer(createReducer(store.injectedReducers));
     });
   }
+
+  storeObj = store;
 
   return store;
 }
