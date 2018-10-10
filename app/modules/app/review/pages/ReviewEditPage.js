@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import { createStructuredSelector } from 'reselect';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import StarRatings from 'react-star-ratings';
 import {
   Button,
@@ -17,7 +20,6 @@ import {
   PageHeader,
 } from 'react-bootstrap';
 import { makeSelectCurrentUser } from 'containers/App/redux/selectors';
-import 'react-datepicker/dist/react-datepicker.css';
 import {
   reviewLoadRequest,
   updateReviewField,
@@ -25,6 +27,8 @@ import {
   loadNewReview,
 } from '../redux/actions';
 import { makeSelectReview, makeSelectReviewLoading } from '../redux/selectors';
+
+import './style.css';
 
 class ReviewEditPage extends Component {
   componentWillMount() {
@@ -42,6 +46,7 @@ class ReviewEditPage extends Component {
 
     const restaurantId = this.props.match.params.id; // eslint-disable-line
     this.props.reviewSave(restaurantId);
+    this.props.history.push(`/restaurants/${restaurantId}/reviews`); // eslint-disable-line
   };
 
   onUpdateField = field => evt => {
@@ -56,6 +61,10 @@ class ReviewEditPage extends Component {
     this.props.updateField('rate', nextValue);
   };
 
+  handleDateChange = date => {
+    this.props.updateField('date', date);
+  };
+
   loadReview = reviewId => {
     const { reviewLoad } = this.props;
     const restaurantId = this.props.match.params.id;
@@ -67,7 +76,7 @@ class ReviewEditPage extends Component {
   };
 
   render() {
-    const { review } = this.props;
+    const { review, currentUser } = this.props;
     const restaurantId = this.props.match.params.id;
 
     return (
@@ -79,10 +88,10 @@ class ReviewEditPage extends Component {
             </PageHeader>
             <Form horizontal onSubmit={this.onSubmit}>
               <FormGroup controlId="rate">
-                <Col componentClass={ControlLabel} sm={2}>
+                <Col componentClass={ControlLabel} sm={3}>
                   Rate: {review.get('rate')}
                 </Col>
-                <Col sm={10}>
+                <Col sm={9}>
                   <StarRatings
                     numberOfStars={5}
                     starRatedColor="rgb(255, 180, 0)"
@@ -92,11 +101,26 @@ class ReviewEditPage extends Component {
                   />
                 </Col>
               </FormGroup>
+              <FormGroup controlId="date">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Visite Date:
+                </Col>
+                <Col sm={9}>
+                  <DatePicker
+                    className="visite-date"
+                    selected={moment(review.get('date')) || moment()}
+                    onChange={this.handleDateChange}
+                    dateFormat="LL"
+                    todayButton="Today"
+                    maxDate={moment()}
+                  />
+                </Col>
+              </FormGroup>
               <FormGroup controlId="comment">
-                <Col componentClass={ControlLabel} sm={2}>
+                <Col componentClass={ControlLabel} sm={3}>
                   Comment
                 </Col>
-                <Col sm={10}>
+                <Col sm={9}>
                   <FormControl
                     componentClass="textarea"
                     value={review.get('comment') || ''}
@@ -107,6 +131,22 @@ class ReviewEditPage extends Component {
                   />
                 </Col>
               </FormGroup>
+              {currentUser.get('role') === 'admin' && (
+                <FormGroup controlId="reply">
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Reply
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      componentClass="textarea"
+                      value={review.get('reply') || ''}
+                      onChange={this.onUpdateField('reply')}
+                      placeholder="Reply..."
+                      rows={2}
+                    />
+                  </Col>
+                </FormGroup>
+              )}
               <Col sm={6} className="header-btn">
                 <Button bsStyle="primary" type="submit">
                   Save
@@ -134,6 +174,7 @@ ReviewEditPage.propTypes = {
   reviewLoad: PropTypes.func.isRequired,
   loadNewReview: PropTypes.func.isRequired,
   review: PropTypes.object.isRequired,
+  currentUser: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({

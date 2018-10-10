@@ -35,8 +35,12 @@ class RestaurantsPage extends Component {
   }
 
   componentWillMount() {
+    const { currentUser } = this.props;
     this.props.restaurantList();
-    this.props.userList();
+
+    if (currentUser.get('role') === 'admin') {
+      this.props.userList();
+    }
   }
 
   onDelete = deleteId => () => {
@@ -99,11 +103,13 @@ class RestaurantsPage extends Component {
         <tr key={restaurant._id}>
           <td>{idx + 1}</td>
           <td>{restaurant.name}</td>
-          <td>
-            {restaurant.user === null
-              ? '-'
-              : `${restaurant.user.firstName} ${restaurant.user.lastName}`}
-          </td>
+          {currentUser.get('role') !== 'owner' && (
+            <td>
+              {!restaurant.user
+                ? '-'
+                : `${restaurant.user.firstName} ${restaurant.user.lastName}`}
+            </td>
+          )}
           <td>
             {restaurant.average === null ? (
               'No rate'
@@ -113,6 +119,7 @@ class RestaurantsPage extends Component {
                 isSelectable={false}
                 starRatedColor="rgb(255, 180, 0)"
                 starDimension="20px"
+                starSpacing="1px"
               />
             )}
           </td>
@@ -207,7 +214,7 @@ class RestaurantsPage extends Component {
                 <tr>
                   <th>#</th>
                   <th>Name</th>
-                  <th>Owner</th>
+                  {currentUser.get('role') !== 'owner' && <th>Owner</th>}
                   <th>Average Rate</th>
                   <th />
                 </tr>

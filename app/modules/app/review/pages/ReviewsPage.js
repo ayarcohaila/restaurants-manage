@@ -12,10 +12,8 @@ import {
   Grid,
   Row,
   Col,
-  PageHeader,
   Table,
   Modal,
-  Glyphicon,
   FormControl,
 } from 'react-bootstrap';
 import {
@@ -50,6 +48,7 @@ class ReviewsPage extends Component {
 
     if (nextState.showReplyConfirm !== showReplyConfirm) {
       this.props.reviewList(restaurantId);
+      this.setState({ replyText: '' });
     }
     return true;
   }
@@ -90,18 +89,19 @@ class ReviewsPage extends Component {
     if (!reviews.toJS().length) {
       return '';
     }
-    /* eslint-disable */
     const minRateId = reviews
       .toJS()
       .filter(
         item =>
-          item.rate === Math.min(...reviews.toJS().map(item => item.rate)),
+          item.rate ===
+          Math.min(...reviews.toJS().map(element => element.rate)),
       )[0]._id;
     const maxRateId = reviews
       .toJS()
       .filter(
         item =>
-          item.rate === Math.max(...reviews.toJS().map(item => item.rate)),
+          item.rate ===
+          Math.max(...reviews.toJS().map(element => element.rate)),
       )[0]._id;
 
     const averageRate =
@@ -116,21 +116,20 @@ class ReviewsPage extends Component {
         value: averageRate,
       },
       {
-        header: 'Max rated Review',
+        header: 'Max-rated Review',
         id: maxRateId,
       },
       {
-        header: 'Min rated Review',
+        header: 'Min-rated Review',
         id: minRateId,
       },
     ];
   };
 
-  sortReviewsByDate = reviews => {
-    return reviews.toJS().sort((a, b) => {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    });
-  };
+  sortReviewsByDate = reviews =>
+    reviews
+      .toJS()
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   renderDeleteConfirmDialog = () => {
     const { showDeleteConfirm } = this.state;
@@ -171,11 +170,10 @@ class ReviewsPage extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button bsStyle="info" onClick={this.handleReplyConfirm}>
-            Submit&nbsp;&nbsp;
+            Submit
           </Button>
           <Button bsStyle="danger" onClick={this.handleCancel}>
-            Cancel&nbsp;&nbsp;
-            <Glyphicon glyph="eye-close" />
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>
@@ -187,27 +185,39 @@ class ReviewsPage extends Component {
     const restaurantId = this.props.match.params.id;
     return (
       <tr key={review._id}>
-        <td>{moment(review.date).format('YYYY-MM-DD HH:mm')}</td>
+        <td>{moment(review.date).format('MMM DD YYYY')}</td>
         <td>
           <StarRatings
             numberOfStars={5}
             starRatedColor="rgb(255, 180, 0)"
             rating={review.rate}
             starDimension="20px"
+            starSpacing="1px"
             isSelectable={false}
           />
         </td>
         <td>{review.comment}</td>
-        <td>{!review.reply ? 'Pending...' : review.reply}</td>
+        {/* eslint-disable */}
+        <td>
+          {!review.reply ? (
+            currentUser.get('role') === 'user' ? (
+              ''
+            ) : (
+              <Button
+                disabled={review.reply.length !== 0}
+                bsStyle="success"
+                onClick={() => this.onReply(review._id)}
+              >
+                {review.reply.length !== 0 ? 'Replied' : 'Reply'}
+              </Button>
+            )
+          ) : (
+            review.reply
+          )}
+        </td>
+        {/* eslint-enable */}
         {currentUser.get('role') !== 'user' && (
           <td>
-            <Button
-              disabled={review.reply.length !== 0}
-              bsStyle="success"
-              onClick={() => this.onReply(review._id)}
-            >
-              {review.reply.length !== 0 ? 'Replied' : 'Reply'}&nbsp;&nbsp;<Glyphicon glyph="send" />
-            </Button>&nbsp;&nbsp;
             {currentUser.get('role') === 'admin' && (
               <Link
                 className="signup-link btn btn-info"
@@ -236,9 +246,23 @@ class ReviewsPage extends Component {
     if (!reviews.toJS().length) {
       return (
         <Grid>
-          <Col>
-            <PageHeader>No Reviews</PageHeader>
-          </Col>
+          <Row className="page-header">
+            <Col sm={6}>
+              <h2>No Reviews</h2>
+            </Col>
+            <Col sm={6} className="header-btn">
+              {currentUser.get('role') !== 'owner' && (
+                <Link
+                  className="signup-link btn btn-primary"
+                  role="button"
+                  to={`/restaurants/${restaurantId}/reviews/new`}
+                  href={`/restaurants/${restaurantId}/reviews/new`}
+                >
+                  Add
+                </Link>
+              )}
+            </Col>
+          </Row>
         </Grid>
       );
     }
@@ -253,14 +277,16 @@ class ReviewsPage extends Component {
               <h2>Review{reviews.toJS().length !== 1 && 's'}</h2>
             </Col>
             <Col sm={6} className="header-btn">
-              <Link
-                className="signup-link btn btn-primary"
-                role="button"
-                to={`/restaurants/${restaurantId}/reviews/new`}
-                href={`/restaurants/${restaurantId}/reviews/new`}
-              >
-                Add&nbsp;<Glyphicon glyph="plus" />
-              </Link>
+              {currentUser.get('role') !== 'owner' && (
+                <Link
+                  className="signup-link btn btn-primary"
+                  role="button"
+                  to={`/restaurants/${restaurantId}/reviews/new`}
+                  href={`/restaurants/${restaurantId}/reviews/new`}
+                >
+                  Add
+                </Link>
+              )}
             </Col>
           </Row>
           {this.formatReviewsData().map((item, idx) => {
@@ -282,7 +308,7 @@ class ReviewsPage extends Component {
                   <Table className="review-table" striped>
                     <thead>
                       <tr>
-                        <th>Date</th>
+                        <th>Visite Date</th>
                         <th>Rate</th>
                         <th>Comment</th>
                         <th>Reply</th>

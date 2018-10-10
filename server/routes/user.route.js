@@ -5,7 +5,7 @@ const policies = require('../policies');
 
 const router = express.Router();
 
-router.use(policies.checkRoles([ROLES.ADMIN, ROLES.OWNER]));
+router.use(policies.checkRoles([ROLES.ADMIN]));
 
 router
   .route('/')

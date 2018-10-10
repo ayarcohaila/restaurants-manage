@@ -16,7 +16,6 @@ import {
   PageHeader,
   ControlLabel,
   InputGroup,
-  Glyphicon,
 } from 'react-bootstrap';
 import { makeSelectCurrentUser } from 'containers/App/redux/selectors';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -48,6 +47,7 @@ class RestaurantEditPage extends Component {
   onSubmit = e => {
     e.preventDefault();
     this.props.restaurantSave();
+    this.props.history.push(`/restaurants`); // eslint-disable-line
   };
 
   onUpdateField = field => evt => {
@@ -93,9 +93,7 @@ class RestaurantEditPage extends Component {
                 </Col>
                 <Col sm={9}>
                   <InputGroup>
-                    <InputGroup.Addon>
-                      <Glyphicon glyph="user" />
-                    </InputGroup.Addon>
+                    <InputGroup.Addon>@</InputGroup.Addon>
                     <FormControl
                       value={restaurant.get('name') || ''}
                       onChange={this.onUpdateField('name')}

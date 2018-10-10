@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Alert } from 'react-bootstrap';
+import { AlertList } from 'react-bs-notifier';
 import { setGlobalNotification } from 'containers/App/redux/actions';
 import { makeSelectNotification } from 'containers/App/redux/selectors';
 
@@ -29,20 +29,23 @@ class Notification extends Component {
 
   render() {
     const { notification } = this.props;
-    const type = notification.get('type');
     if (!notification.get('visible')) {
       return null;
     }
 
-    return (
-      <Alert
-        bsStyle={`${type === 'error' ? 'danger' : type}`}
-        onDismiss={this.onDismiss}
-      >
-        <h4>{notification.get('heading')}</h4>
-        <p>{notification.get('message')}</p>
-      </Alert>
-    );
+    const newAlert = [
+      {
+        id: new Date().getTime(),
+        type:
+          notification.get('type') === 'error'
+            ? 'danger'
+            : notification.get('type'),
+        headline: `${notification.get('heading')}!`,
+        message: notification.get('message'),
+      },
+    ];
+
+    return <AlertList position="top-right" timeout={3} alerts={newAlert} />;
   }
 }
 
