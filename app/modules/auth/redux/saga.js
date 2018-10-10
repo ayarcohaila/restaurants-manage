@@ -16,6 +16,7 @@ export function* loginRequest(action) {
       password: action.password,
     });
     yield put(loginSuccess(data));
+    notify.success('Successfully logged in!'); //eslint-disable-line
   } catch (err) {
     yield put(loginError(err));
   }
@@ -25,6 +26,7 @@ export function* signupRequest(action) {
   try {
     const data = yield call(request, 'auth/signup', 'POST', action.data);
     yield put(signupSuccess(data));
+    notify.success('Your account has been created'); //eslint-disable-line
     history.push('/login');
   } catch (err) {
     yield put(signupError(err));

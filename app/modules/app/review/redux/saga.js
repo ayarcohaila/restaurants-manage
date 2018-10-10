@@ -91,6 +91,7 @@ export function* reviewSaveRequest(action) {
     }
 
     yield put(reviewSaveSuccess(responseData));
+    notify.success('Review saved!'); // eslint-disable-line
   } catch (err) {
     yield put(reviewSaveError(err));
   }

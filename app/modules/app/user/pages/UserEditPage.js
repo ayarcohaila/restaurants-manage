@@ -68,6 +68,12 @@ class UserPage extends Component {
       { value: 'admin', label: 'Admin' },
     ];
 
+    const selectedValue = !options.filter(
+      option => option.value === user.get('role'),
+    )[0]
+      ? options[0]
+      : options.filter(option => option.value === user.get('role'))[0];
+
     return (
       <Grid fluid>
         <Row>
@@ -159,6 +165,7 @@ class UserPage extends Component {
                       options={options}
                       isSearchable={false}
                       onChange={this.onRoleChange}
+                      value={selectedValue}
                       placeholder="Please choose a role"
                     />
                   </Col>

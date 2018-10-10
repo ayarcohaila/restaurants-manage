@@ -7,6 +7,7 @@ import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 import { createStructuredSelector } from 'reselect';
 import { makeSelectCurrentUser } from 'containers/App/redux/selectors';
+import Notification from 'containers/Notification';
 
 import reducer from './redux/reducers';
 import saga from './redux/saga';
@@ -86,6 +87,7 @@ class App extends Component {
     return (
       <div className="main-app">
         <TopBar />
+        <Notification />
         {this[`${currentUser.get('role')}Routes`]()}
       </div>
     );

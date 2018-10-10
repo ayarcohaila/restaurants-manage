@@ -6,25 +6,34 @@ const ROLES = require('../constants/role');
 
 function create(req, res, next) {
   const restaurant = new Restaurant(req.body);
-  restaurant.user = req.user._id; // eslint-disable-line
-
-  restaurant
-    .save()
-    .then(newRestaurant => {
-      res.json(newRestaurant);
-    })
-    .catch(next);
+  if (req.user.role === ROLES.USER) {
+    res.status(403).json({ message: 'You are not allowed to add restaurant' });
+  } else {
+    restaurant.user =
+      req.user.role === ROLES.OWNER ? req.user._id : req.body.user;
+    restaurant
+      .save()
+      .then(newRestaurant => {
+        res.json(newRestaurant);
+      })
+      .catch(next);
+  }
 }
 
 function update(req, res, next) {
   Object.assign(req.restaurant, req.body);
-
-  req.restaurant
-    .save()
-    .then(updatedRestaurant => {
-      res.json(updatedRestaurant);
-    })
-    .catch(next);
+  if (req.user.role === ROLES.ADMIN) {
+    req.restaurant
+      .save()
+      .then(updatedRestaurant => {
+        res.json(updatedRestaurant);
+      })
+      .catch(next);
+  } else {
+    res
+      .status(403)
+      .json({ message: 'You are not allowed to update restaurant' });
+  }
 }
 
 function read(req, res) {
@@ -65,12 +74,18 @@ function list(req, res, next) {
 }
 
 function remove(req, res, next) {
-  req.restaurant
-    .remove()
-    .then(() => {
-      res.json(req.restaurant);
-    })
-    .catch(next);
+  if (req.user.role !== ROLES.ADMIN) {
+    res
+      .status(403)
+      .json({ message: 'You are not allowed to delete restaurant' });
+  } else {
+    req.restaurant
+      .remove()
+      .then(() => {
+        res.json(req.restaurant);
+      })
+      .catch(next);
+  }
 }
 
 function getRestaurantByID(req, res, next, id) {

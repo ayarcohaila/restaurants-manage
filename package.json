@@ -167,6 +167,7 @@
     "rc-slider": "^8.6.3",
     "react": "16.4.1",
     "react-bootstrap": "^0.32.4",
+    "react-bs-notifier": "^5.0.0",
     "react-datepicker": "^1.6.0",
     "react-dom": "16.4.1",
     "react-fontawesome": "^1.6.1",

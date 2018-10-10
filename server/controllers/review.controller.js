@@ -1,4 +1,5 @@
 const Review = require('../models/review.model');
+const ROLES = require('../constants/role');
 
 function create(req, res, next) {
   const review = new Review(req.body);
@@ -13,13 +14,16 @@ function create(req, res, next) {
 
 function update(req, res, next) {
   Object.assign(req.review, req.body);
-
-  req.review
-    .save()
-    .then(updatedReview => {
-      res.json(updatedReview);
-    })
-    .catch(next);
+  if (req.user.role !== ROLES.USER) {
+    req.review
+      .save()
+      .then(updatedReview => {
+        res.json(updatedReview);
+      })
+      .catch(next);
+  } else {
+    res.status(403).json({ message: 'You are not allowed to update review' });
+  }
 }
 
 function read(req, res) {
@@ -40,12 +44,16 @@ function list(req, res, next) {
 }
 
 function remove(req, res, next) {
-  req.review
-    .remove()
-    .then(() => {
-      res.json(req.review);
-    })
-    .catch(next);
+  if (req.user.role !== ROLES.ADMIN) {
+    res.status(403).json({ message: 'You are not allowed to delete review' });
+  } else {
+    req.review
+      .remove()
+      .then(() => {
+        res.json(req.review);
+      })
+      .catch(next);
+  }
 }
 
 function getReviewByID(req, res, next, id) {

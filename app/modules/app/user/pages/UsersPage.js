@@ -22,6 +22,10 @@ class UsersPage extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.userList();
+  }
+
   componentWillMount() {
     this.props.userList();
   }
@@ -65,9 +69,7 @@ class UsersPage extends Component {
     );
   };
 
-  renderUsers = () => {
-    const { users } = this.props;
-
+  renderUsers = users => {
     if (!users.size) {
       return (
         <tr>
@@ -105,7 +107,7 @@ class UsersPage extends Component {
   };
 
   render() {
-    const { loading } = this.props;
+    const { loading, users } = this.props;
 
     if (loading) {
       return <Loading />;
@@ -140,7 +142,7 @@ class UsersPage extends Component {
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody>{this.renderUsers()}</tbody>
+              <tbody>{this.renderUsers(users)}</tbody>
             </Table>
           </Col>
         </Row>

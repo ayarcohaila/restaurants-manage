@@ -22,14 +22,12 @@ import { signupRequest } from '../redux/actions';
 class SignupPage extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       email: '',
       firstName: '',
       lastName: '',
       password: '',
       confirmPassword: '',
-      confirmErrorMsg: false,
     };
   }
 
@@ -42,9 +40,8 @@ class SignupPage extends Component {
     const { email, firstName, lastName, password } = this.state;
     if (this.passwordConfirm()) {
       this.props.signupRequest({ email, firstName, lastName, password });
-      this.setState({ confirmErrorMsg: false });
     } else {
-      this.setState({ confirmErrorMsg: true });
+      notify.error('Confirm Password does not match!'); //eslint-disable-line
     }
   };
 
@@ -60,7 +57,6 @@ class SignupPage extends Component {
       lastName,
       password,
       confirmPassword,
-      confirmErrorMsg,
     } = this.state;
     return (
       <Grid>
@@ -160,11 +156,6 @@ class SignupPage extends Component {
                     />
                   </InputGroup>
                 </Col>
-                <div>
-                  {confirmErrorMsg &&
-                    notify.error('Confirm Password does not match!') // eslint-disable-line
-                  }
-                </div>
               </FormGroup>
               <FormGroup>
                 <Row>

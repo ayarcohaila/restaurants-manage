@@ -77,7 +77,9 @@ export function* userSaveRequest() {
     }
 
     yield put(userSaveSuccess(responseData));
+    notify.success('User saved'); //eslint-disable-line
   } catch (err) {
+    notify.success(err); //eslint-disable-line
     yield put(userSaveError(err));
   }
 }

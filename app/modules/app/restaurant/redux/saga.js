@@ -1,5 +1,6 @@
 import { fork, call, put, takeLatest, select } from 'redux-saga/effects';
 import request from 'utils/request';
+import history from 'browserHistory';
 
 import * as CONSTANTS from './constants';
 import {
@@ -82,9 +83,12 @@ export function* restaurantSaveRequest() {
         true,
       );
     }
+    history.push('/restaurants');
+    notify.success('Restaurant saved'); // eslint-disable-line
 
     yield put(restaurantSaveSuccess(responseData));
   } catch (err) {
+    notify.error(err); // eslint-disable-line
     yield put(restaurantSaveError(err));
   }
 }
