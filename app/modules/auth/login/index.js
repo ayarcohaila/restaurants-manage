@@ -44,8 +44,12 @@ class LoginPage extends Component {
     return (
       <Grid>
         <Row>
-          <Col xs={4} xsOffset={4}>
-            <PageHeader>Log in to your account</PageHeader>
+          <Col xs={8} xsOffset={2}>
+            <Row>
+              <Col smOffset={4}>
+                <PageHeader>Log in your account</PageHeader>
+              </Col>
+            </Row>
             <Form horizontal onSubmit={this.onSubmit}>
               <FormGroup>
                 <Col componentClass={ControlLabel} sm={4}>
@@ -89,12 +93,16 @@ class LoginPage extends Component {
                 <Row>
                   <Col smOffset={4} sm={3}>
                     <Button bsStyle="primary" type="submit" size="large">
-                      <FontAwesome name="sign-in" />
-                      &nbsp;&nbsp;Login
+                      Login
                     </Button>
                   </Col>
                   <Col sm={5}>
-                    <Link to="/signup" href="/signup" className="signup-link">
+                    <Link
+                      className="signup-link btn btn-default"
+                      role="button"
+                      to="/signup"
+                      href="/signup"
+                    >
                       Click here to sign up
                     </Link>
                   </Col>
