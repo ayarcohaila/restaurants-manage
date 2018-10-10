@@ -1,0 +1,24 @@
+.page-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-btn {
+  text-align: right;
+}
+
+.navbar a {
+  color: white;
+}
+
+.review-table th,
+.review-table tr {
+  width: 20%;
+}
+
+.review-table td:last-child,
+.review-table .star-ratings {
+  white-space: nowrap;
+}
