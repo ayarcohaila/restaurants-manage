@@ -28,6 +28,8 @@ class SignupPage extends Component {
       firstName: '',
       lastName: '',
       password: '',
+      confirmPassword: '',
+      confirmErrorMsg: false,
     };
   }
 
@@ -38,15 +40,32 @@ class SignupPage extends Component {
   onSubmit = e => {
     e.preventDefault();
     const { email, firstName, lastName, password } = this.state;
-    this.props.signupRequest({ email, firstName, lastName, password });
+    if (this.passwordConfirm()) {
+      this.props.signupRequest({ email, firstName, lastName, password });
+      this.setState({ confirmErrorMsg: false });
+    } else {
+      this.setState({ confirmErrorMsg: true });
+    }
+  };
+
+  passwordConfirm = () => {
+    const { password, confirmPassword } = this.state;
+    return password === confirmPassword;
   };
 
   render() {
-    const { email, firstName, lastName, password } = this.state;
+    const {
+      email,
+      firstName,
+      lastName,
+      password,
+      confirmPassword,
+      confirmErrorMsg,
+    } = this.state;
     return (
       <Grid>
         <Row>
-          <Col xs={4} xsOffset={4}>
+          <Col xs={8} xsOffset={2}>
             <PageHeader>Sign up a new account</PageHeader>
             <Form horizontal onSubmit={this.onSubmit}>
               <FormGroup controlId="firstName">
@@ -123,16 +142,44 @@ class SignupPage extends Component {
                   </InputGroup>
                 </Col>
               </FormGroup>
+              <FormGroup controlId="confirmPassword">
+                <Col componentClass={ControlLabel} sm={4}>
+                  Confirm password
+                </Col>
+                <Col sm={8}>
+                  <InputGroup>
+                    <InputGroup.Addon>
+                      <FontAwesome name="key" />
+                    </InputGroup.Addon>
+                    <FormControl
+                      value={confirmPassword}
+                      onChange={this.onChange('confirmPassword')}
+                      placeholder="Confirm password"
+                      type="password"
+                      required
+                    />
+                  </InputGroup>
+                </Col>
+                <div>
+                  {confirmErrorMsg &&
+                    notify.error('Confirm Password does not match!') // eslint-disable-line
+                  }
+                </div>
+              </FormGroup>
               <FormGroup>
                 <Row>
                   <Col smOffset={4} sm={3}>
                     <Button bsStyle="primary" type="submit">
-                      <FontAwesome name="user-plus" />
-                      &nbsp;&nbsp;Sign up
+                      Sign up
                     </Button>
                   </Col>
                   <Col sm={5}>
-                    <Link to="/login" href="/login" className="signup-link">
+                    <Link
+                      className="signup-link btn btn-default"
+                      role="button"
+                      to="/login"
+                      href="/login"
+                    >
                       Go back to log in
                     </Link>
                   </Col>

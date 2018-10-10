@@ -25,7 +25,6 @@ export function* signupRequest(action) {
   try {
     const data = yield call(request, 'auth/signup', 'POST', action.data);
     yield put(signupSuccess(data));
-    // notify.success('Your account has been created');
     history.push('/login');
   } catch (err) {
     yield put(signupError(err));
