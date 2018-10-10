@@ -30,8 +30,8 @@ class RootApp extends Component {
 
     return (
       <div className="app">
-        <Helmet titleTemplate="%s - Jogging Track" defaultTitle="Jogging Track">
-          <meta name="description" content="Jogging Track Application" />
+        <Helmet titleTemplate="%s - Restaurants" defaultTitle="Restaurants">
+          <meta name="description" content="Restaurants Application" />
         </Helmet>
 
         <Switch>
