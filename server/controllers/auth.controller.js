@@ -9,7 +9,7 @@ function login(req, res, next) {
     .then(user => {
       if (!user) {
         return res
-          .status(500)
+          .status(401)
           .json({ message: 'Email or password does not match' });
       }
 
@@ -18,7 +18,7 @@ function login(req, res, next) {
         .then(() => {
           const token = jwt.sign(
             {
-              _id: user._id, // eslint-disable-line
+              _id: user._id,
               firstName: user.firstName,
               lastName: user.lastName,
               email: user.email,
@@ -29,7 +29,7 @@ function login(req, res, next) {
           );
 
           res.json({
-            _id: user._id, // eslint-disable-line
+            _id: user._id,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
@@ -38,13 +38,13 @@ function login(req, res, next) {
           });
         })
         .catch(() => {
-          res.status(500).json({ message: 'Email or password does not match' });
+          res.status(401).json({ message: 'Email or password does not match' });
         });
     })
     .catch(next);
 }
 
-function signup(req, res, next) {
+function signup(req, res) {
   const user = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -57,7 +57,9 @@ function signup(req, res, next) {
     .then(newUser => {
       res.json(newUser);
     })
-    .catch(next);
+    .catch(() => {
+      res.status(409).json({ message: 'Email is already taken!' });
+    });
 }
 
 module.exports = {
