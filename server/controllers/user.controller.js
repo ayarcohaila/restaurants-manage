@@ -63,7 +63,8 @@ function list(req, res, next) {
 
 function remove(req, res, next) {
   req.userModel
-    .remove(() => {
+    .remove()
+    .then(() => {
       res.json(req.userModel);
     })
     .catch(next);
@@ -83,20 +84,6 @@ function getUserByID(req, res, next, id) {
     .catch(next);
 }
 
-function getProfile(req, res, next) {
-  User.findById(req.user._id) // eslint-disable-line
-    .then(user => {
-      if (!user) {
-        res.status(404).json({ message: 'User not found' });
-        return;
-      }
-
-      req.userModel = user;
-      next();
-    })
-    .catch(next);
-}
-
 module.exports = {
   create,
   update,
@@ -104,5 +91,4 @@ module.exports = {
   list,
   remove,
   getUserByID,
-  getProfile,
 };
