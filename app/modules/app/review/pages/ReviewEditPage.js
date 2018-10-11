@@ -28,8 +28,6 @@ import {
 } from '../redux/actions';
 import { makeSelectReview, makeSelectReviewLoading } from '../redux/selectors';
 
-import './style.css';
-
 class ReviewEditPage extends Component {
   componentWillMount() {
     this.loadReview(this.props.match.params.reviewId); // eslint-disable-line
@@ -107,7 +105,7 @@ class ReviewEditPage extends Component {
                 </Col>
                 <Col sm={9}>
                   <DatePicker
-                    className="visite-date"
+                    className="form-control"
                     selected={moment(review.get('date')) || moment()}
                     onChange={this.handleDateChange}
                     dateFormat="LL"

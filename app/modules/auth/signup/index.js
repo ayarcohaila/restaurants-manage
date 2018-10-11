@@ -61,8 +61,12 @@ class SignupPage extends Component {
     return (
       <Grid>
         <Row>
-          <Col xs={8} xsOffset={2}>
-            <PageHeader>Sign up a new account</PageHeader>
+          <Col xs={6} xsOffset={2}>
+            <Row>
+              <Col smOffset={4}>
+                <PageHeader>Sign up a new account</PageHeader>
+              </Col>
+            </Row>
             <Form horizontal onSubmit={this.onSubmit}>
               <FormGroup controlId="firstName">
                 <Col componentClass={ControlLabel} sm={4}>

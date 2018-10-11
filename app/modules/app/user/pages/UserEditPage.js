@@ -131,6 +131,7 @@ class UserPage extends Component {
                       value={user.get('email') || ''}
                       onChange={this.onUpdateField('email')}
                       placeholder="E-mail"
+                      type="email"
                       required
                     />
                   </InputGroup>
