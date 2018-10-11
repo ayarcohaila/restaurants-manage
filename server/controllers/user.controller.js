@@ -1,7 +1,7 @@
 const User = require('../models/user.model');
 const ROLES = require('../constants/role');
 
-function create(req, res, next) {
+function create(req, res) {
   const user = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -18,10 +18,12 @@ function create(req, res, next) {
     .then(newUser => {
       res.json(newUser);
     })
-    .catch(next);
+    .catch(err => {
+      res.status(500).json({ message: err.message });
+    });
 }
 
-function update(req, res, next) {
+function update(req, res) {
   Object.assign(req.userModel, {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -41,7 +43,9 @@ function update(req, res, next) {
     .then(updatedUser => {
       res.json(updatedUser);
     })
-    .catch(next);
+    .catch(err => {
+      res.status(500).json({ message: err.message });
+    });
 }
 
 function read(req, res) {

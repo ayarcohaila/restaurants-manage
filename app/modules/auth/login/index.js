@@ -44,7 +44,7 @@ class LoginPage extends Component {
     return (
       <Grid>
         <Row>
-          <Col xs={8} xsOffset={2}>
+          <Col xs={6} xsOffset={2}>
             <Row>
               <Col smOffset={4}>
                 <PageHeader>Log in your account</PageHeader>
