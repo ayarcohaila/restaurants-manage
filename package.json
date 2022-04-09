@@ -137,7 +137,7 @@
     "ip": "1.1.5",
     "lodash": "4.17.10",
     "minimist": "1.2.0",
-    "moment": "^2.22.2",
+    "moment": "^2.29.2",
     "mongoose": "^5.3.1",
     "prop-types": "^15.6.2",
     "rc-slider": "^8.6.3",
