@@ -138,7 +138,7 @@
     "lodash": "4.17.10",
     "minimist": "1.2.0",
     "moment": "^2.22.2",
-    "mongoose": "^5.3.1",
+    "mongoose": "^5.7.5",
     "prop-types": "^15.6.2",
     "rc-slider": "^8.6.3",
     "react": "16.4.1",
